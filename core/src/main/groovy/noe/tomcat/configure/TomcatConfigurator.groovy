@@ -156,6 +156,40 @@ class TomcatConfigurator {
   }
 
   /**
+   * Set Tomcat http connector.
+   *
+   * This methods work with situation that there is 0 or 1 http connector.
+   * More http connectors is not possible to handle from code because they
+   * have no unique id. *
+   *
+   * If there is not http (non-secure) connector then new connector is created.
+   *
+   * Non secure http protocol is distinguished that attribute secure=false or is not set.
+   *
+   * Http connector has one of the following protocols and is not secured
+   *   HTTP/1.1
+   *   org.apache.coyote.http11.Http11Protocol - blocking Java connector
+   *   org.apache.coyote.http11.Http11NioProtocol - non blocking Java connector
+   *   org.apache.coyote.http11.Http11AprProtocol - the APR/native connector.
+   *
+   */
+  TomcatConfigurator http2Connector(SecureHttp2ConnectorTomcat connector) {
+    File serverXml = getServerXml()
+
+    if (serverXml?.exists()) {
+      Node Server = getParsedConfig(serverXml)
+      setParsedConfig(serverXml, new ConnectorConfiguratorTomcat(Server).defineHttp2Connector(connector))
+
+      if (connector.getPort() > 0) tomcatInstance.mainHttpsPort = connector.getPort()
+      if (connector.getAddress() != null) tomcatInstance.host = connector.getAddress()
+    } else {
+      missingConfigFile('server.xml')
+    }
+
+    return configure()
+  }
+
+  /**
    * Shift bindings ports (http, https, ajp, shutdow-port) by offset.
    */
   TomcatConfigurator portOffset(int portOffset) {
@@ -359,7 +393,30 @@ class TomcatConfigurator {
     if (confFile?.exists()) {
       configVault.push(confFile)
       Node serverNode = getParsedConfig(confFile)
-      serverNode.appendNode('Listener', ['className' : listenerFQCN])
+      serverNode.appendNode('Listener', ['className': listenerFQCN])
+      printNodeToFile(confFile, serverNode)
+    } else {
+      missingConfigFile(serverXml)
+    }
+    return this
+  }
+
+  /**
+   * Removes the specified listener from server.xml
+   * @param listenerFQCN the fully qualified class name of the listener
+   * @return this
+   */
+  TomcatConfigurator removeListener(String listenerFQCN) {
+    String serverXml = 'server.xml'
+    File confFile = retrieveConfFile(serverXml)
+    if (confFile?.exists()) {
+      configVault.push(confFile)
+      Node serverNode = getParsedConfig(confFile)
+      Node listenerNode = serverNode.Listener.find { node ->
+        node.@className == listenerFQCN
+      }
+      listenerNode.replaceNode {}
+
       printNodeToFile(confFile, serverNode)
     } else {
       missingConfigFile(serverXml)
@@ -466,6 +523,7 @@ class TomcatConfigurator {
   private Node getParsedConfig(File config) {
     if (!isConfigParsed(config)) {
       parsedConfigs[config] = new XmlParser().parse(config)
+//      parsedConfigs[config] = new XmlParser().parseText().parse(config)
     }
 
     return parsedConfigs[config]

@@ -29,6 +29,22 @@ class ConnectorAttributesTransformer {
   }
 
   /**
+   * Provides attributes for secure HTTP connector.
+   * Returns map of key:value corresponding with attributes in Tomcat server.xml.
+   */
+  Map<String, Object> secureHttp2Connector() {
+    return new SecureHttp2Transformer(connector).transform()
+  }
+
+  /**
+   * Provides attributes for secure HTTP connector.
+   * Returns map of key:value corresponding with attributes in Tomcat server.xml.
+   */
+  Map<String, Object> secureHttp2UpgradeProtocol() {
+    return new SecureHttp2Transformer(connector).transformUpgradeProtocol()
+  }
+
+  /**
    * Provides attributes for AJP connector.
    * Returns map of key:value corresponding with attributes in Tomcat server.xml.
    */
@@ -81,9 +97,9 @@ class ConnectorAttributesTransformer {
   }
 
   private static class SecureHttpTransformer {
-    SecureHttpConnectorTomcat connector
+    SecureHttpConnectorTomcatAbstract connector
 
-    SecureHttpTransformer(SecureHttpConnectorTomcat connector) {
+    SecureHttpTransformer(SecureHttpConnectorTomcatAbstract connector) {
       this.connector = connector
     }
 
@@ -117,6 +133,25 @@ class ConnectorAttributesTransformer {
       }
       if (connector.getSslPassword() != null && !connector.getSslPassword().isEmpty()) {
         res.put('SSLPassword', connector.getSslPassword())
+      }
+
+      return res
+    }
+  }
+
+  private static class SecureHttp2Transformer extends SecureHttpTransformer {
+    SecureHttp2ConnectorTomcat connector1
+
+    SecureHttp2Transformer(SecureHttp2ConnectorTomcat connector) {
+      super(connector)
+      this.connector1 = connector
+    }
+
+    Map<String, Object> transformUpgradeProtocol() {
+      Map<String, Object> res = [:]
+
+      if (connector.getProtocol() != null && !connector.getProtocol().isEmpty()) {
+        res.put('className', connector.getUpgradeProtocol())
       }
 
       return res

@@ -15,6 +15,21 @@ package noe.tomcat.configure
  *
  * @link https://tomcat.apache.org/tomcat-8.0-doc/config/http.html
  */
-public class SecureHttpConnectorTomcat extends SecureHttpConnectorTomcatAbstract<SecureHttpConnectorTomcat> {
+public class SecureHttp2ConnectorTomcat extends SecureHttpConnectorTomcatAbstract<SecureHttp2ConnectorTomcat> {
 
+  private String upgradeProtocol
+
+  public SecureHttp2ConnectorTomcat() {
+    super()
+//    setProtocol("org.apache.coyote.http2.Http2Protocol")
+  }
+
+  String getUpgradeProtocol() {
+    return upgradeProtocol
+  }
+
+  public SecureHttp2ConnectorTomcat setUpgradeProtocol(String upgradeProtocol) {
+    this.upgradeProtocol = upgradeProtocol
+    return this
+  }
 }

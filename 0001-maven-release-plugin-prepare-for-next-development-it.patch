@@ -1,0 +1,62 @@
+From 9e74af4d2f8f5d1228fe190ac78edfbb8325ebf7 Mon Sep 17 00:00:00 2001
+From: Jan Onderka <jonderka@redhat.com>
+Date: Wed, 27 Mar 2019 09:57:58 +0100
+Subject: [PATCH] [maven-release-plugin] prepare for next development iteration
+
+---
+ core/pom.xml      | 2 +-
+ pom.xml           | 4 ++--
+ testsuite/pom.xml | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/core/pom.xml b/core/pom.xml
+index 4c25c21..d1a856e 100755
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -4,7 +4,7 @@
+     <parent>
+         <groupId>org.jboss.qa.noe</groupId>
+         <artifactId>noe-core-parent</artifactId>
+-        <version>0.16.21</version>
++        <version>0.16.22-SNAPSHOT</version>
+     </parent>
+ 
+     <artifactId>noe-core</artifactId>
+diff --git a/pom.xml b/pom.xml
+index 0b4573a..991fe7f 100755
+--- a/pom.xml
++++ b/pom.xml
+@@ -4,7 +4,7 @@
+ 
+     <groupId>org.jboss.qa.noe</groupId>
+     <artifactId>noe-core-parent</artifactId>
+-    <version>0.16.21</version>
++    <version>0.16.22-SNAPSHOT</version>
+     <packaging>pom</packaging>
+ 
+     <name>Noe core: Parent</name>
+@@ -43,7 +43,7 @@
+         <connection>scm:git:git@${env.GIT_URL}:${env.GIT_USER}/noe-core.git</connection>
+         <developerConnection>scm:git:git@${env.GIT_URL}:${env.GIT_USER}/noe-core.git</developerConnection>
+         <url>https://${env.GIT_URL}/${env.GIT_USER}/noe-core</url>
+-        <tag>v0.16.21</tag>
++        <tag>HEAD</tag>
+     </scm>
+ 
+     <distributionManagement>
+diff --git a/testsuite/pom.xml b/testsuite/pom.xml
+index d593687..431a421 100755
+--- a/testsuite/pom.xml
++++ b/testsuite/pom.xml
+@@ -4,7 +4,7 @@
+     <parent>
+         <groupId>org.jboss.qa.noe</groupId>
+         <artifactId>noe-core-parent</artifactId>
+-        <version>0.16.21</version>
++        <version>0.16.22-SNAPSHOT</version>
+     </parent>
+ 
+     <artifactId>noe-core-testsuite</artifactId>
+-- 
+2.17.2
+
